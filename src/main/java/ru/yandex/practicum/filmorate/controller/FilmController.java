@@ -25,7 +25,7 @@ public class FilmController {
             throw new ValidationException("максимальная длина описания — 200 символов");
         }
         if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
-            throw new ValidationException("Ошибочна дата релиза");
+            throw new ValidationException("Ошибочная дата релиза");
         }
         if (film.getDuration() <= 0) {
             throw new ValidationException("продолжительность фильма должна быть положительной");
