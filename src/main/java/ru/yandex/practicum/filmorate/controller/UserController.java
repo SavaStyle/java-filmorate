@@ -19,9 +19,9 @@ public class UserController {
     @PostMapping(value = "/users")
     public User addNewUser(@Valid @RequestBody User user) throws ValidationException {
         if (userValidation(user)) {
-            user.setId(getNextUserId());
-            users.put(user.getId(), user);
         }
+        user.setId(getNextUserId());
+        users.put(user.getId(), user);
         return user;
     }
 
@@ -31,9 +31,8 @@ public class UserController {
             if (!(users.keySet().contains(user.getId()))) {
                 throw new ValidationException("пользователь не известен");
             }
-            user.setId(getNextUserId());
-            users.put(user.getId(), user);
         }
+        users.put(user.getId(), user);
         return user;
     }
 

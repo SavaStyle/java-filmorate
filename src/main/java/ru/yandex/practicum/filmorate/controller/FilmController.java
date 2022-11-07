@@ -17,9 +17,9 @@ public class FilmController {
     @PostMapping("/films")
     public Film addNewFilm( @RequestBody Film film) throws ValidationException {
         if (filmValidation(film)) {
-            film.setId(getNextFilmId());
-            films.put(film.getId(), film);
         }
+        film.setId(getNextFilmId());
+        films.put(film.getId(), film);
         return film;
     }
 
@@ -29,9 +29,8 @@ public class FilmController {
             if (!(films.keySet().contains(film.getId()))) {
                 throw new ValidationException("фильм не известен");
             }
-            film.setId(getNextFilmId());
-            films.put(film.getId(), film);
         }
+        films.put(film.getId(), film);
         return film;
     }
 
