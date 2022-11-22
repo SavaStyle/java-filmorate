@@ -14,10 +14,10 @@ class FilmControllerTest {
 
     FilmController fc;
 
-    @BeforeEach
+   /* @BeforeEach
     void start() {
         fc = new FilmController();
-    }
+    }*/
 
     @Test
     void addNewFilmCorrect() throws ValidationException {

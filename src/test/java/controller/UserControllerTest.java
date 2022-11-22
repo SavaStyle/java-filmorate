@@ -16,10 +16,10 @@ class UserControllerTest {
 
     UserController uc;
 
-    @BeforeEach
+  /*  @BeforeEach
     void start() {
         uc = new UserController();
-    }
+    }*/
 
     @Test
     void addNewUserCorrect() throws ValidationException {
