@@ -5,23 +5,27 @@ import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.controller.FilmController;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.FilmService;
 
 import java.time.LocalDate;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class FilmControllerTest {
 
     FilmController fc;
 
-   /* @BeforeEach
+    FilmService fs;
+
+    @BeforeEach
     void start() {
-        fc = new FilmController();
-    }*/
+        fc = new FilmController(fs);
+    }
 
     @Test
     void addNewFilmCorrect() throws ValidationException {
-        Film uno = new Film( "uno", "Описание", LocalDate.of(1895,12,28), 100);
+        Film uno = new Film("uno", "Описание", LocalDate.of(1895, 12, 28), 100);
         fc.addNewFilm(uno);
     }
 
