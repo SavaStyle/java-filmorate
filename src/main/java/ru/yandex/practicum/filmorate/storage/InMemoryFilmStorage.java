@@ -20,8 +20,7 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Film addNewFilm(Film film) throws ValidationException {
-        if (filmValidation(film)) {
-        }
+        filmValidation(film);
         film.setId(getNextFilmId());
         film.setLike(new HashSet<>());
         films.put(film.getId(), film);
@@ -31,7 +30,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public Film updateFilm(Film film) throws ValidationException, NotFoundException {
         if (filmValidation(film)) {
-            if (!(films.keySet().contains(film.getId()))) {
+            if (!(films.containsKey(film.getId()))) {
                 throw new NotFoundException("фильм не известен");
             }
         }
@@ -44,13 +43,12 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Collection<Film> returnFilms() {
-        Collection<Film> filmList = films.values();
-        return filmList;
+        return films.values();
     }
 
     @Override
     public Film getFilm(int id) throws NotFoundException {
-        if (!(films.keySet().contains(id))) {
+        if (!(films.containsKey(id))) {
             throw new NotFoundException("фильм не найден");
         }
         return films.get(id);
@@ -58,23 +56,18 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public boolean filmValidation(Film film) throws ValidationException {
-        var b = true;
         if (film.getName() == null || film.getName().isBlank()) {
-            b = false;
             throw new ValidationException("Название не может бытьпустым");
         }
         if (film.getDescription().length() > 200) {
-            b = false;
             throw new ValidationException("максимальная длина описания — 200 символов");
         }
         if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
-            b = false;
             throw new ValidationException("Ошибочная дата релиза");
         }
         if (film.getDuration() <= 0) {
-            b = false;
             throw new ValidationException("продолжительность фильма должна быть положительной");
         }
-        return b;
+        return true;
     }
 }

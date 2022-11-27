@@ -26,10 +26,12 @@ public class UserService {
     }
 
     public void deleteFriend(int userID, int friendId) throws NotFoundException {
-        User user = userStorage.getUser(userID);
-        User friend = userStorage.getUser(friendId);
-        user.getFriends().remove(friendId);
-        friend.getFriends().remove(userID);
+        if ((userStorage.getUser(userID)) != null && (userStorage.getUser(friendId) != null)) {
+            User user = userStorage.getUser(userID);
+            User friend = userStorage.getUser(friendId);
+            user.getFriends().remove(friendId);
+            friend.getFriends().remove(userID);
+        }
     }
 
     public List<User> getFriendsList(int userID) throws NotFoundException {

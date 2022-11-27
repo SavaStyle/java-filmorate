@@ -16,7 +16,7 @@ public class User {
     private String name;
     private LocalDate birthday;
 
-    Set<Integer> friends;
+    private Set<Integer> friends;
 
     public User(String email, String login, LocalDate birthday) {
         this.email = email;

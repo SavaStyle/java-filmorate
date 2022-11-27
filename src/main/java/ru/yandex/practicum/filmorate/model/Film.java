@@ -23,7 +23,7 @@ public class Film {
     @Min(1)
     private int duration;
     @JsonIgnore
-    Set<Long> like;
+    private Set<Long> like;
 
     public Film(String name, String description, LocalDate releaseDate, int duration) {
         this.name = name;

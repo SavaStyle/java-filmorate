@@ -22,21 +22,16 @@ public class FilmService {
 
     public void addLike(int filmId, int userId) throws NotFoundException {
         Film film = filmStorage.getFilm(filmId);
-        if (film.getLike().add((long) userId)) {
-            System.out.println("Лайк добавлен");
-        } else {
-            System.out.println("Ошибка добавления лайка");
+        if (userStorage.getUser(userId) != null) {
+            film.getLike().add((long) userId);
         }
     }
 
     public void removeLike(int filmId, int userId) throws NotFoundException {
         Film film = filmStorage.getFilm(filmId);
-        if (userStorage.getUser(userId) != null && film.getLike().remove((long) userId)) {
-            System.out.println("Лайк пользователя " + userId + " удален");
-        } else {
-            System.out.println("Пользователь не ставил лайк этому фильму");
+        if (userStorage.getUser(userId) != null) {
+            film.getLike().remove((long) userId);
         }
-
     }
 
     public Collection<Film> getTop(int count) {
