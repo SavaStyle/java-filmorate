@@ -25,6 +25,11 @@ public class Film {
     @JsonIgnore
     private Set<Long> like;
 
+    private int genreId;
+
+    private int mpaId;
+
+
     public Film(String name, String description, LocalDate releaseDate, int duration) {
         this.name = name;
         this.description = description;
