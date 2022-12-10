@@ -26,6 +26,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         films.put(film.getId(), film);
         return film;
     }
+    // 1
 
     @Override
     public Film updateFilm(Film film) throws ValidationException, NotFoundException {
