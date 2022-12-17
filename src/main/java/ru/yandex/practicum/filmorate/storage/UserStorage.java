@@ -1,21 +1,30 @@
 package ru.yandex.practicum.filmorate.storage;
 
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
-import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public interface UserStorage {
-    User addNewUser(User user) throws ValidationException;
 
-    User updateUser(User user) throws ValidationException, NotFoundException;
+    User addNewUser(User user);
 
-    Collection<User> returnUsers();
+    User updateUser(User user);
 
-    User getUser(int id) throws NotFoundException;
+    Collection<User> getAllUsers();
 
-    boolean userValidation(User user) throws ValidationException;
+    Optional<User> getUserById(int id);
+
+    void addFriend(int userId, int friendId);
+
+    void removeFriend(int userId, int friendId);
+
+    List<User> getFriendsById(int id);
+
+    List<User> getCommonFriends(int u, int f);
+
+    boolean isPresent(int id);
 }

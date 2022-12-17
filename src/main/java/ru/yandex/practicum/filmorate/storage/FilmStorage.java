@@ -5,15 +5,24 @@ import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 public interface FilmStorage {
     Film addNewFilm(Film film) throws ValidationException;
 
     Film updateFilm(Film film) throws ValidationException, NotFoundException;
 
-    Collection<Film> returnFilms();
+    Optional<Film> getFilmById(int id) throws NotFoundException;
 
-    Film getFilm(int id) throws NotFoundException;
+    Collection<Film> getAllFilms();
 
-    boolean filmValidation(Film film) throws ValidationException;
+    List<Film> getPopularFilms(int count);
+
+    Optional<Film> addLike(int filmId, int userId) throws NotFoundException;
+
+    Optional<Film> removeLike(int filmId, int userId) throws NotFoundException;
+
+    boolean isPresent(int id);
 }
+

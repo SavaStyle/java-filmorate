@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.Map;
 
-@RestControllerAdvice("ru.yandex.practicum.filmorate")
+@RestControllerAdvice
 public class ErrorHandler {
 
     @ExceptionHandler
@@ -18,8 +18,8 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String, String> notFound(final NotFoundException e) {
-        return Map.of("Объект не найден", e.getMessage());
+    public Map<String, String> notFoundExceptionHandler(NotFoundException exception) {
+        return Map.of("error", exception.getMessage());
     }
 
     @ExceptionHandler
