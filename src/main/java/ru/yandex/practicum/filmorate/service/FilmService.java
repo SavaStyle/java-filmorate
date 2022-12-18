@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.LikesStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.time.LocalDate;
@@ -23,15 +24,13 @@ public class FilmService {
 
     private final FilmStorage filmStorage;
     private final UserStorage userStorage;
+    private final LikesStorage likesStorage;
+
 
     public Film addNewFilm(Film film) {
-        try {
-            filmValidation(film);
-            filmStorage.addNewFilm(film);
-            return film;
-        } catch (ValidationException e) {
-            throw new RuntimeException(e);
-        }
+        filmValidation(film);
+        filmStorage.addNewFilm(film);
+        return film;
     }
 
     public Film updateFilm(Film film) {
@@ -49,13 +48,13 @@ public class FilmService {
     public void addLike(int filmId, int userId) throws NotFoundException {
         getFilmById(filmId);
         userStorage.getUserById(userId);
-        filmStorage.addLike(filmId, userId);
+        likesStorage.addLike(filmId, userId);
     }
 
     public void removeLike(int filmId, int userId) throws NotFoundException {
         filmStorage.isPresent(filmId);
         userStorage.isPresent(userId);
-        filmStorage.removeLike(filmId, userId);
+        likesStorage.removeLike(filmId, userId);
     }
 
     public Optional<Film> getFilmById(Integer id) {

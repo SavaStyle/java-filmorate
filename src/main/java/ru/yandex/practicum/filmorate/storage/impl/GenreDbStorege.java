@@ -10,6 +10,7 @@ import ru.yandex.practicum.filmorate.storage.GenreStorage;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -41,4 +42,12 @@ public class GenreDbStorege implements GenreStorage {
         return Optional.ofNullable(jdbcTemplate.queryForObject(sqlQuery, GenreDbStorege::makeGenre, id));
     }
 
+    @Override
+    public  List<Genre> setGenresMakeFilm(int id) {
+        String sqlQuery = "SELECT GENRE.GENRE_ID, GENRE_NAME " +
+                "FROM GENRE " +
+                "LEFT JOIN FILM_GENRE FG on GENRE.GENRE_ID = FG.GENRE_ID " +
+                "WHERE FILM_ID = ?";
+        return jdbcTemplate.query(sqlQuery, GenreDbStorege::makeGenre, id);
+    }
 }
