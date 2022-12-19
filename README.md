@@ -12,5 +12,5 @@ Film и User - основные классы
 список друзей пользователя => по логину пользователя
 
 статус дружбы по логину пользоветеля и id друга 
-
--- [![Quick-DBD-sql-11-5.png](https://i.postimg.cc/5ttRhmfr/Quick-DBD-sql-11-5.png)](https://postimg.cc/QFRm519g)
+ 
+![img.png](img.png)
