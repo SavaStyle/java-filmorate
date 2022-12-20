@@ -22,5 +22,7 @@ public interface FilmStorage {
     boolean isPresent(int id);
 
     void removeFilmById(int id);
+
+    List<Film> getRecommendations(int userID);
 }
 

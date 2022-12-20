@@ -5,7 +5,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.time.LocalDate;
@@ -19,6 +21,7 @@ import java.util.Optional;
 public class UserService {
 
     private final UserStorage userStorage;
+    private final FilmStorage filmStorage;
 
     public User addNewUser(User user) {
         try {
@@ -94,5 +97,9 @@ public class UserService {
 
     public void deleteUserById(int id){
         userStorage.removeUserById(id);
+    }
+
+    public List<Film> getRecommendations(int userID) {
+        return filmStorage.getRecommendations(userID);
     }
 }
