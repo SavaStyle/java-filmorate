@@ -11,6 +11,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -30,6 +31,8 @@ public class Film {
     private Mpa mpa;
 
     private List<Genre> genres;
+
+    private Set<Director> directors;
 
     public Film(String name, String description, LocalDate releaseDate, int duration) {
         this.name = name;

@@ -28,7 +28,7 @@ public class FilmController {
 
     @GetMapping("/films")
     public Collection<Film> returnFilms() {
-        return filmService.getFilmStorage().getAllFilms();
+        return filmService.getAllFilms();
     }
 
     @GetMapping("/films/{id}")
@@ -54,5 +54,10 @@ public class FilmController {
     @DeleteMapping("/films/{id}")
     public void deleteFilmById(@PathVariable String id) {
         filmService.deleteFilmById(Integer.valueOf(id));
+    }
+
+    @GetMapping("/films/director/{directorId}")
+    public Collection<Film> getFilmsOfDirector(@PathVariable int directorId, @RequestParam String sortBy) {
+        return filmService.getFilmsOfDirector(directorId, sortBy);
     }
 }
