@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
+import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Review;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.ReviewLikeStorage;
@@ -21,6 +22,7 @@ public class ReviewService {
     private final UserStorage userStorage;
 
     public Optional<Review> addReview(Review review) {
+        reviewValidation(review);
         filmStorage.isPresent(review.getFilmId());
         userStorage.isPresent(review.getUserId());
         return reviewStorage.addReview(review);
@@ -75,5 +77,21 @@ public class ReviewService {
         userStorage.isPresent(userId);
         reviewStorage.isPresent(id);
         reviewLikeStorage.deleteLikeFromReview(id, userId);
+    }
+
+    public boolean reviewValidation(Review review) throws ValidationException {
+        if (review.getContent() == null || review.getContent().isBlank()) {
+            throw new ValidationException("Отзыв не может быть пустым");
+        }
+        if (review.getUserId() == null || review.getUserId() == 0) {
+            throw new ValidationException("Пользователь должен быть указан");
+        }
+        if (review.getFilmId() == null || review.getFilmId() == 0) {
+            throw new ValidationException("Фильм должен быть указан");
+        }
+        if (review.getIsPositive() == null) {
+            throw new ValidationException("Тип отзыва должен быть указан");
+        }
+        return true;
     }
 }
