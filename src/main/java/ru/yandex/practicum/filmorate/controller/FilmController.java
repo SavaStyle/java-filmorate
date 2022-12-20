@@ -60,4 +60,10 @@ public class FilmController {
     public Collection<Film> getFilmsOfDirector(@PathVariable int directorId, @RequestParam String sortBy) {
         return filmService.getFilmsOfDirector(directorId, sortBy);
     }
+
+    @GetMapping("/films/search")
+    public Collection<Film> search(@RequestParam(value = "query", required = false) String query,
+                                   @RequestParam(value = "by", required = false) String[] fields) {
+        return filmService.search(query, fields);
+    }
 }
