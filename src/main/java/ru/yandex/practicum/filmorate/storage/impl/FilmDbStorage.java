@@ -114,4 +114,30 @@ public class FilmDbStorage implements FilmStorage {
             return true;
         }
     }
+
+    @Override
+    public List<Film> getRecommendations(int userID) {
+        String sqlQuery =
+                "    SELECT FILMS.*, MPA.MPA_NAME" +
+                "    FROM FILMS" +
+                "    INNER JOIN (SELECT FILM_ID" +
+                "           FROM (SELECT COLLABORATORS_LIKES.USER_ID, COUNT(COLLABORATORS_LIKES.FILM_ID) AS MATCHES" +
+                "                   FROM LIKES AS COLLABORATORS_LIKES" +
+                "                   INNER JOIN LIKES AS USER_LIKES" +
+                "                   ON COLLABORATORS_LIKES.FILM_ID = USER_LIKES.FILM_ID" +
+                "                   WHERE USER_LIKES.USER_ID = ? AND COLLABORATORS_LIKES.USER_ID <> ? " +
+                "                   GROUP BY COLLABORATORS_LIKES.USER_ID" +
+                "                   ORDER BY MATCHES DESC" +
+                "                   LIMIT 1) AS COLLABORATOR" +
+                "           INNER JOIN LIKES AS COLLABORATOR_FILMS" +
+                "           ON COLLABORATOR.USER_ID = COLLABORATOR_FILMS.USER_ID" +
+                "           WHERE COLLABORATOR_FILMS.FILM_ID NOT IN (SELECT FILM_ID " +
+                "                   FROM LIKES " +
+                "                   WHERE USER_ID = ?)) AS RECOMMENDED" +
+                "   ON RECOMMENDED.FILM_ID = FILMS.FILM_ID" +
+                "   LEFT JOIN MPA" +
+                "   ON MPA.MPA_ID = FILMS.MPA_ID" +
+                "   ORDER BY FILMS.FILM_ID";
+        return jdbcTemplate.query(sqlQuery, this::makeFilm, userID, userID, userID);
+    }
 }

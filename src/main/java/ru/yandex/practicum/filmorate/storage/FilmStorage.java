@@ -20,5 +20,7 @@ public interface FilmStorage {
     List<Film> getPopularFilms(int count);
 
     boolean isPresent(int id);
+
+    List<Film> getRecommendations(int userID);
 }
 
