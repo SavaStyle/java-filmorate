@@ -25,7 +25,7 @@ create table if not exists FILM_GENRE
 (
     FILM_ID  INTEGER not null,
     GENRE_ID INTEGER not null,
-    FOREIGN KEY (FILM_ID) REFERENCES FILMS (FILM_ID),
+    FOREIGN KEY (FILM_ID) REFERENCES FILMS (FILM_ID) on delete cascade,
     FOREIGN KEY (GENRE_ID) REFERENCES GENRE (GENRE_ID)
 );
 
@@ -42,14 +42,14 @@ create table if not exists LIKES
 (
     FILM_ID INTEGER not null,
     USER_ID INTEGER not null,
-    FOREIGN KEY (FILM_ID) REFERENCES FILMS (FILM_ID),
-    FOREIGN KEY (USER_ID) REFERENCES USERS (USER_ID)
+    FOREIGN KEY (FILM_ID) REFERENCES FILMS (FILM_ID)  on delete cascade,
+    FOREIGN KEY (USER_ID) REFERENCES USERS (USER_ID) on delete cascade
 );
 
 create table if not exists FRIENDSHIP
 (
     USER_ID   INTEGER not null,
     FRIEND_ID INTEGER not null,
-    FOREIGN KEY (USER_ID) REFERENCES users (USER_ID),
-    FOREIGN KEY (FRIEND_ID) REFERENCES users (USER_ID)
+    FOREIGN KEY (USER_ID) REFERENCES users (USER_ID) on delete cascade,
+    FOREIGN KEY (FRIEND_ID) REFERENCES users (USER_ID) on delete cascade
 );

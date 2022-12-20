@@ -95,6 +95,10 @@ public class UserService {
         return b;
     }
 
+    public void deleteUserById(int id){
+        userStorage.removeUserById(id);
+    }
+
     public List<Film> getRecommendations(int userID) {
         return filmStorage.getRecommendations(userID);
     }

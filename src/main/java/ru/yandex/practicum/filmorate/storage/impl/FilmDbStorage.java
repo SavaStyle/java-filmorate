@@ -116,6 +116,13 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
+    public void removeFilmById(int id) {
+        String sql = "delete from FILMS where FILM_ID = ?";
+        jdbcTemplate.update(sql, id);
+    }
+
+
+    @Override
     public List<Film> getRecommendations(int userID) {
         String sqlQuery =
                 "    SELECT FILMS.*, MPA.MPA_NAME" +

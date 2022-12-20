@@ -27,4 +27,6 @@ public interface UserStorage {
     List<User> getCommonFriends(int u, int f);
 
     boolean isPresent(int id);
+
+    void removeUserById(int id);
 }
