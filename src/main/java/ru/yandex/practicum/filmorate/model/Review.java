@@ -10,7 +10,7 @@ import javax.validation.constraints.Null;
 @Setter
 @AllArgsConstructor
 public class Review {
-    private Integer id;
+    private Integer reviewId;
     private String content;
     @Null
     private Integer useful;

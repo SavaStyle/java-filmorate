@@ -37,15 +37,15 @@ public class ReviewDbStorage implements ReviewStorage {
             stmt.setInt(5, review.getFilmId());
             return stmt;
         }, keyHolder);
-        review.setId(Objects.requireNonNull(keyHolder.getKey()).intValue());
-        return findReviewById(review.getId());
+        review.setReviewId(Objects.requireNonNull(keyHolder.getKey()).intValue());
+        return findReviewById(review.getReviewId());
     }
 
     @Override
     public Optional<Review> updateReview(Review review) {
-        String sqlQuery = "UPDATE REVIEWS SET CONTENT = ?, USEFUL = ?, IS_POSITIVE = ?, USER_ID = ?, FILM_ID = ? WHERE REVIEW_ID = ?";
-        jdbcTemplate.update(sqlQuery, review.getContent(), review.getUseful(), review.getIsPositive(), review.getUserId(), review.getFilmId(), review.getId());
-        return findReviewById(review.getId());
+        String sqlQuery = "UPDATE REVIEWS SET CONTENT = ?, USEFUL = ?, IS_POSITIVE = ? WHERE REVIEW_ID = ?";
+        jdbcTemplate.update(sqlQuery, review.getContent(), review.getUseful(), review.getIsPositive(), review.getReviewId());
+        return findReviewById(review.getReviewId());
     }
 
     @Override

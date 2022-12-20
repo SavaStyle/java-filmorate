@@ -102,5 +102,5 @@ create table if not exists REVIEW_LIKES
     REVIEW_ID INTEGER not null,
     USER_ID   INTEGER not null,
     FOREIGN KEY (REVIEW_ID) REFERENCES REVIEWS (REVIEW_ID),
-    FOREIGN KEY (USER_ID) REFERENCES USERS (USER_ID) on delete cascade
+    FOREIGN KEY (USER_ID) REFERENCES USERS (USER_ID) on update cascade on delete cascade
 );

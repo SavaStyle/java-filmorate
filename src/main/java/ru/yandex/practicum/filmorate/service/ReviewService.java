@@ -29,7 +29,7 @@ public class ReviewService {
     }
 
     public Optional<Review> updateReview(Review review) {
-        reviewStorage.isPresent(review.getId());
+        reviewStorage.isPresent(review.getReviewId());
         return reviewStorage.updateReview(review);
     }
 
