@@ -118,4 +118,10 @@ public class FilmService {
         setFilmDirectors(films);
         return films;
     }
+
+    public Collection<Film> getCommonFilms(int userId, int friendId) {
+        Collection<Film> films = filmStorage.getCommonFilms(userId, friendId);
+        setFilmDirectors(films);
+        return films;
+    }
 }
