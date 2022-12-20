@@ -91,4 +91,8 @@ public class UserService {
         }
         return b;
     }
+
+    public void deleteUserById(int id){
+        userStorage.removeUserById(id);
+    }
 }
