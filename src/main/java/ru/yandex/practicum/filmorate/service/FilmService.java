@@ -118,4 +118,10 @@ public class FilmService {
         setFilmDirectors(films);
         return films;
     }
+
+    public List<Film> search(String query, String[] by) {
+        List<Film> films = filmStorage.search(query, by);
+        setFilmDirectors(films);
+        return films;
+    }
 }

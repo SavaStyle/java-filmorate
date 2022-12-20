@@ -176,4 +176,66 @@ public class FilmDbStorage implements FilmStorage {
                 "   ORDER BY FILMS.FILM_ID";
         return jdbcTemplate.query(sqlQuery, this::makeFilm, userID, userID, userID);
     }
+
+    @Override
+    public List<Film> search(String query, String[] by) {
+        if (query != null && !query.isEmpty()) {
+            query = "%" + query + "%";
+        }
+        if (query == null || query.isEmpty()) {
+            String sqlQuery =
+                    "   SELECT FILMS.*, MPA.MPA_NAME" +
+                            "   FROM FILMS" +
+                            "   LEFT OUTER JOIN (SELECT FILM_ID, COUNT(USER_ID) AS RATING" +
+                            "       FROM LIKES" +
+                            "       GROUP BY FILM_ID) AS FILMS_RATING" +
+                            "   ON FILMS.FILM_ID=FILMS_RATING.FILM_ID" +
+                            "   LEFT JOIN MPA" +
+                            "   ON MPA.MPA_ID = FILMS.MPA_ID" +
+                            "   ORDER BY FILMS_RATING.RATING DESC NULLS LAST";
+            return jdbcTemplate.query(sqlQuery, this::makeFilm);
+        } else if(List.of(by).contains("director") && List.of(by).contains("title")) {
+            String sqlQuery =
+                    "   SELECT FILMS.*, MPA.MPA_NAME" +
+                            "   FROM FILMS" +
+                            "   LEFT OUTER JOIN (SELECT FILM_ID, COUNT(USER_ID) AS RATING" +
+                            "       FROM LIKES" +
+                            "       GROUP BY FILM_ID) AS FILMS_RATING" +
+                            "   ON FILMS.FILM_ID=FILMS_RATING.FILM_ID" +
+                            "   LEFT JOIN MPA ON MPA.MPA_ID = FILMS.MPA_ID" +
+                            "   LEFT JOIN FILMS_DIRECTORS ON FILMS.FILM_ID = FILMS_DIRECTORS.FILM_ID" +
+                            "   LEFT JOIN DIRECTORS ON FILMS_DIRECTORS.DIRECTOR_ID = DIRECTORS.DIRECTOR_ID" +
+                            "   WHERE DIRECTORS.DIRECTOR_NAME ILIKE ? OR FILMS.FILM_NAME ILIKE ?" +
+                            "   ORDER BY FILMS_RATING.RATING DESC NULLS LAST";
+            return jdbcTemplate.query(sqlQuery, this::makeFilm, query, query);
+        } else if(List.of(by).contains("director")) {
+            String sqlQuery =
+                    "   SELECT FILMS.*, MPA.MPA_NAME" +
+                            "   FROM FILMS" +
+                            "   LEFT OUTER JOIN (SELECT FILM_ID, COUNT(USER_ID) AS RATING" +
+                            "       FROM LIKES" +
+                            "       GROUP BY FILM_ID) AS FILMS_RATING" +
+                            "   ON FILMS.FILM_ID=FILMS_RATING.FILM_ID" +
+                            "   LEFT JOIN MPA ON MPA.MPA_ID = FILMS.MPA_ID" +
+                            "   LEFT JOIN FILMS_DIRECTORS ON FILMS.FILM_ID = FILMS_DIRECTORS.FILM_ID" +
+                            "   LEFT JOIN DIRECTORS ON FILMS_DIRECTORS.DIRECTOR_ID = DIRECTORS.DIRECTOR_ID" +
+                            "   WHERE DIRECTORS.DIRECTOR_NAME ILIKE ?" +
+                            "   ORDER BY FILMS_RATING.RATING DESC NULLS LAST";
+            return jdbcTemplate.query(sqlQuery, this::makeFilm, query);
+        } else {
+            String sqlQuery =
+                    "   SELECT FILMS.*, MPA.MPA_NAME" +
+                            "   FROM FILMS" +
+                            "   LEFT OUTER JOIN (SELECT FILM_ID, COUNT(USER_ID) AS RATING" +
+                            "       FROM LIKES" +
+                            "       GROUP BY FILM_ID) AS FILMS_RATING" +
+                            "   ON FILMS.FILM_ID=FILMS_RATING.FILM_ID" +
+                            "   LEFT JOIN MPA ON MPA.MPA_ID = FILMS.MPA_ID" +
+                            "   LEFT JOIN FILMS_DIRECTORS ON FILMS.FILM_ID = FILMS_DIRECTORS.FILM_ID" +
+                            "   LEFT JOIN DIRECTORS ON FILMS_DIRECTORS.DIRECTOR_ID = DIRECTORS.DIRECTOR_ID" +
+                            "   WHERE FILMS.FILM_NAME ILIKE ?" +
+                            "   ORDER BY FILMS_RATING.RATING DESC NULLS LAST";
+            return jdbcTemplate.query(sqlQuery, this::makeFilm, query);
+        }
+    }
 }
