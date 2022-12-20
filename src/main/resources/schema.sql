@@ -29,6 +29,29 @@ create table if not exists FILM_GENRE
     FOREIGN KEY (GENRE_ID) REFERENCES GENRE (GENRE_ID)
 );
 
+create table if not exists DIRECTORS
+(
+    DIRECTOR_ID   INTEGER auto_increment,
+    DIRECTOR_NAME CHARACTER VARYING(50) not null
+        constraint DIRECTORS_UNIQUE_NAME
+            unique,
+    constraint "DIRECTORS_pk"
+        primary key (DIRECTOR_ID)
+);
+create table if not exists FILMS_DIRECTORS
+(
+    FILM_DIRECTOR_ID INTEGER auto_increment
+        primary key,
+    DIRECTOR_ID      INTEGER not null,
+    FILM_ID       INTEGER not null,
+    constraint "FILMS_DIRECTORS_FILMS_null_fk"
+        foreign key (FILM_ID) references FILMS
+            on update cascade on delete cascade,
+    constraint FILMS_DIRECTORS_DIRECTORS_DIRECTOR_ID_FK
+        foreign key (DIRECTOR_ID) references DIRECTORS
+            on update cascade on delete cascade
+);
+
 create table if not exists USERS
 (
     USER_ID    INTEGER AUTO_INCREMENT PRIMARY KEY,

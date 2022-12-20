@@ -7,6 +7,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
+import ru.yandex.practicum.filmorate.exceptions.UnsupportedActionException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
@@ -101,7 +102,7 @@ public class FilmDbStorage implements FilmStorage {
         int duration = resultSet.getInt("duration");
         Mpa mpa = new Mpa(resultSet.getInt("MPA_ID"), resultSet.getString("MPA_NAME"));
         List<Genre> genres = genreStorage.setGenresMakeFilm(id);
-        return new Film(id, name, description, releaseDate, duration, mpa, genres);
+        return new Film(id, name, description, releaseDate, duration, mpa, genres, new HashSet<>());
     }
 
     @Override
@@ -120,7 +121,35 @@ public class FilmDbStorage implements FilmStorage {
         String sql = "delete from FILMS where FILM_ID = ?";
         jdbcTemplate.update(sql, id);
     }
-
+    @Override
+    public Collection<Film> getFilmsOfDirector(int directorId, String sortBy) {
+        String sql;
+        switch (sortBy.toLowerCase()) {
+            case "likes":
+                sql = "select F.FILM_ID, F.FILM_NAME, F.DESCRIPTION, F.DURATION, F.RELEASE_DATE, F.MPA_ID, M.MPA_NAME, count(L.USER_ID) as RAITING " +
+                        "from FILMS as F " +
+                        "join MPA as M on F.MPA_ID = M.MPA_ID " +
+                        "left join LIKES as L on F.FILM_ID = L.FILM_ID " +
+                        "join FILMS_DIRECTORS as FD on F.FILM_ID = FD.FILM_ID " +
+                        "where FD.DIRECTOR_ID = ? " +
+                        "group by F.FILM_ID, F.FILM_NAME, F.DESCRIPTION, F.DURATION, F.RELEASE_DATE, F.MPA_ID, M.MPA_NAME " +
+                        "order by RAITING desc;";
+                break;
+            case "year":
+                sql = "select F.FILM_ID, F.FILM_NAME, F.DESCRIPTION, F.DURATION, F.RELEASE_DATE, F.MPA_ID, M.MPA_NAME, count(L.USER_ID) as RAITING " +
+                        "from FILMS as F " +
+                        "join MPA as M on F.MPA_ID = M.MPA_ID " +
+                        "left join LIKES as L on F.FILM_ID = L.FILM_ID " +
+                        "join FILMS_DIRECTORS as FD on F.FILM_ID = FD.FILM_ID " +
+                        "where FD.DIRECTOR_ID = ? " +
+                        "group by F.FILM_ID, F.FILM_NAME, F.DESCRIPTION, F.DURATION, F.RELEASE_DATE, F.MPA_ID, M.MPA_NAME " +
+                        "order by extract(year from F.RELEASE_DATE)";
+                break;
+            default:
+                throw new UnsupportedActionException("Неподдерживаемый параметр сортировки");
+        }
+        return jdbcTemplate.query(sql, this::makeFilm, directorId);
+    }
 
     @Override
     public List<Film> getRecommendations(int userID) {
