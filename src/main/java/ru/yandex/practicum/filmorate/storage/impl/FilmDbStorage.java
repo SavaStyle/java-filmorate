@@ -176,6 +176,18 @@ public class FilmDbStorage implements FilmStorage {
                 "   ORDER BY FILMS.FILM_ID";
         return jdbcTemplate.query(sqlQuery, this::makeFilm, userID, userID, userID);
     }
+    
+    @Override
+    public Collection<Film> getCommonFilms(int userId, int friendId) {
+        String sql = "select F.*, M.MPA_NAME " +
+                "from FILMS as F, LIKES as L1, LIKES as L2 " +
+                "join MPA as M on F.MPA_ID = M.MPA_ID " +
+                "join (select FILM_ID, count(USER_ID) as LIKES from LIKES group by FILM_ID) as RAITINGS " +
+                "on F.FILM_ID = RAITINGS.FILM_ID " +
+                "where F.FILM_ID = L1.FILM_ID and L1.USER_ID = ? and F.FILM_ID = L2.FILM_ID and L2.USER_ID = ? " +
+                "order by RAITINGS.LIKES desc;";
+        return jdbcTemplate.query(sql, this::makeFilm, userId, friendId);
+    }
 
     @Override
     public List<Film> search(String query, String[] by) {
@@ -236,6 +248,6 @@ public class FilmDbStorage implements FilmStorage {
                             "   WHERE FILMS.FILM_NAME ILIKE ?" +
                             "   ORDER BY FILMS_RATING.RATING DESC NULLS LAST";
             return jdbcTemplate.query(sqlQuery, this::makeFilm, query);
-        }
+        }  
     }
 }

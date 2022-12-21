@@ -118,10 +118,16 @@ public class FilmService {
         setFilmDirectors(films);
         return films;
     }
+    
+    public Collection<Film> getCommonFilms(int userId, int friendId) {
+        Collection<Film> films = filmStorage.getCommonFilms(userId, friendId);
+        setFilmDirectors(films);
+        return films;
+    }
 
     public List<Film> search(String query, String[] by) {
         List<Film> films = filmStorage.search(query, by);
         setFilmDirectors(films);
         return films;
-    }
+    } 
 }
