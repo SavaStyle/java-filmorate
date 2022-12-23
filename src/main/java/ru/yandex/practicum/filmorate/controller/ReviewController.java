@@ -15,7 +15,6 @@ import java.util.Optional;
 public class ReviewController {
     private final ReviewService reviewService;
 
-
     @PostMapping
     public Optional<Review> addReview(@RequestBody Review review) {
         return reviewService.addReview(review);
@@ -37,7 +36,8 @@ public class ReviewController {
     }
 
     @GetMapping()
-    public Collection<Review> findReviewsByFilmId(@RequestParam(value = "filmId", defaultValue = "0", required = false) Integer filmId, @RequestParam(value = "count", defaultValue = "10", required = false) Integer count) {
+    public Collection<Review> findReviewsByFilmId(@RequestParam(value = "filmId", defaultValue = "0", required = false)
+         Integer filmId, @RequestParam(value = "count", defaultValue = "10", required = false) Integer count) {
         if (filmId != 0) {
             return reviewService.findReviewsByFilmId(filmId, count);
         } else {

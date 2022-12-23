@@ -17,6 +17,7 @@ public class DirectorService {
     DirectorService(DirectorStorage directorStorage) {
         this.directorStorage = directorStorage;
     }
+
     public Collection<Director> getDirectors() {
         return directorStorage.getDirectors();
     }

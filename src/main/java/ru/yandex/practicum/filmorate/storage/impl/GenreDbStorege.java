@@ -43,7 +43,7 @@ public class GenreDbStorege implements GenreStorage {
     }
 
     @Override
-    public  List<Genre> setGenresMakeFilm(int id) {
+    public List<Genre> setGenresMakeFilm(int id) {
         String sqlQuery = "SELECT GENRE.GENRE_ID, GENRE_NAME " +
                 "FROM GENRE " +
                 "LEFT JOIN FILM_GENRE FG on GENRE.GENRE_ID = FG.GENRE_ID " +

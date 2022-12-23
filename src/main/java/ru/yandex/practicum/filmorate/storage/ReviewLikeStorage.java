@@ -1,9 +1,5 @@
 package ru.yandex.practicum.filmorate.storage;
 
-import ru.yandex.practicum.filmorate.model.Review;
-
-import java.util.Optional;
-
 public interface ReviewLikeStorage {
     void addLikeToReview(int id, int userId);
 

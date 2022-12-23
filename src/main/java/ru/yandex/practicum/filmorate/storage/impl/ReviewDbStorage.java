@@ -9,6 +9,7 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Review;
+import ru.yandex.practicum.filmorate.storage.FeedStorage;
 import ru.yandex.practicum.filmorate.storage.ReviewStorage;
 
 import java.sql.PreparedStatement;
@@ -18,11 +19,24 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 
+import static ru.yandex.practicum.filmorate.storage.impl.FeedDbStorage.*;
+
 @Repository
 @RequiredArgsConstructor
 @Primary
 public class ReviewDbStorage implements ReviewStorage {
     private final JdbcTemplate jdbcTemplate;
+    private final FeedStorage feedStorage;
+
+    static Review makeReview(ResultSet rs, int rowNum) throws SQLException {
+        int id = rs.getInt("REVIEW_ID");
+        String content = rs.getString("CONTENT");
+        int useful = rs.getInt("USEFUL");
+        boolean isPositive = rs.getBoolean("IS_POSITIVE");
+        int userId = rs.getInt("USER_ID");
+        int filmId = rs.getInt("FILM_ID");
+        return new Review(id, content, useful, isPositive, userId, filmId);
+    }
 
     @Override
     public Optional<Review> addReview(Review review) {
@@ -38,11 +52,14 @@ public class ReviewDbStorage implements ReviewStorage {
             return stmt;
         }, keyHolder);
         review.setReviewId(Objects.requireNonNull(keyHolder.getKey()).intValue());
+        feedStorage.addFeed(review.getUserId(), REVIEW, ADD, review.getReviewId());
         return findReviewById(review.getReviewId());
     }
 
     @Override
     public Optional<Review> updateReview(Review review) {
+        Review rw = findReviewById(review.getReviewId()).get();
+        feedStorage.addFeed(rw.getUserId(), REVIEW, UPDATE, rw.getReviewId());
         String sqlQuery = "UPDATE REVIEWS SET CONTENT = ?, IS_POSITIVE = ? WHERE REVIEW_ID = ?";
         jdbcTemplate.update(sqlQuery, review.getContent(), review.getIsPositive(), review.getReviewId());
         return findReviewById(review.getReviewId());
@@ -58,21 +75,11 @@ public class ReviewDbStorage implements ReviewStorage {
         return Optional.ofNullable(jdbcTemplate.queryForObject(sqlQuery, ReviewDbStorage::makeReview, id));
     }
 
-
     @Override
     public void deleteReviewById(int id) {
         String sqlQuery = "DELETE FROM REVIEWS WHERE REVIEW_ID = ?";
+        feedStorage.addFeed(findReviewById(id).get().getUserId(), REVIEW, REMOVE, id);
         jdbcTemplate.update(sqlQuery, id);
-    }
-
-    static Review makeReview(ResultSet rs, int rowNum) throws SQLException {
-        int id = rs.getInt("REVIEW_ID");
-        String content = rs.getString("CONTENT");
-        int useful = rs.getInt("USEFUL");
-        boolean isPositive = rs.getBoolean("IS_POSITIVE");
-        int userId = rs.getInt("USER_ID");
-        int filmId = rs.getInt("FILM_ID");
-        return new Review(id, content, useful, isPositive, userId, filmId);
     }
 
     @Override
@@ -90,7 +97,6 @@ public class ReviewDbStorage implements ReviewStorage {
                 "LIMIT ?";
         return jdbcTemplate.query(sqlQuery, ReviewDbStorage::makeReview, count);
     }
-
 
     @Override
     public boolean isPresent(int id) {
