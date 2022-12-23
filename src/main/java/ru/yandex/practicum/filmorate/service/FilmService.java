@@ -14,6 +14,8 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static ru.yandex.practicum.filmorate.storage.impl.FeedDbStorage.*;
+
 @Component
 @RequiredArgsConstructor
 @Data
@@ -22,9 +24,8 @@ public class FilmService {
     private final FilmStorage filmStorage;
     private final UserStorage userStorage;
     private final LikesStorage likesStorage;
-
+    private final FeedStorage feedStorage;
     private final DirectorStorage directorStorage;
-
     private final FilmDirectorStorage filmDirectorStorage;
 
 
@@ -54,12 +55,14 @@ public class FilmService {
         getFilmById(filmId);
         userStorage.getUserById(userId);
         likesStorage.addLike(filmId, userId);
+        feedStorage.addFeed(userId, LIKE, ADD, filmId);
     }
 
     public void removeLike(int filmId, int userId) throws NotFoundException {
         filmStorage.isPresent(filmId);
         userStorage.isPresent(userId);
         likesStorage.removeLike(filmId, userId);
+        feedStorage.addFeed(userId, LIKE, REMOVE, filmId);
     }
 
     public Optional<Film> getFilmById(Integer id) {
@@ -105,6 +108,7 @@ public class FilmService {
         setFilmDirectors(films);
         return films;
     }
+
     private void setFilmDirectors(Collection<Film> films) {
         List<Integer> filmIds = films.stream().map(Film::getId).collect(Collectors.toList());
         Map<Integer, Set<Director>> directors = filmDirectorStorage.getDirectorsOfFilms(filmIds);
@@ -118,16 +122,17 @@ public class FilmService {
         setFilmDirectors(films);
         return films;
     }
-    
+
     public Collection<Film> getCommonFilms(int userId, int friendId) {
         Collection<Film> films = filmStorage.getCommonFilms(userId, friendId);
         setFilmDirectors(films);
         return films;
     }
 
+
     public List<Film> search(String query, String[] by) {
         List<Film> films = filmStorage.search(query, by);
         setFilmDirectors(films);
         return films;
-    } 
+    }
 }

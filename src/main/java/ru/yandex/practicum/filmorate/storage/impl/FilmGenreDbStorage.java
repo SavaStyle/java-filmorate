@@ -17,7 +17,7 @@ public class FilmGenreDbStorage implements FilmGenreStorage {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public void addGenreNewFilm (Film film) {
+    public void addGenreNewFilm(Film film) {
         if (film.getGenres() != null) {
             String genres = "INSERT INTO FILM_GENRE (FILM_ID, GENRE_ID) VALUES (?, ?)";
             jdbcTemplate.batchUpdate(genres, film.getGenres(), film.getGenres().size(),
@@ -29,7 +29,7 @@ public class FilmGenreDbStorage implements FilmGenreStorage {
     }
 
     @Override
-    public void updateGenreFilm (Film film) {
+    public void updateGenreFilm(Film film) {
         if (film.getGenres() != null) {
             String deleteGenres = "DELETE FROM FILM_GENRE WHERE FILM_ID = ?";
             jdbcTemplate.update(deleteGenres, film.getId());

@@ -105,3 +105,13 @@ create table if not exists REVIEW_LIKES
     FOREIGN KEY (REVIEW_ID) REFERENCES REVIEWS (REVIEW_ID) on delete cascade,
     FOREIGN KEY (USER_ID) REFERENCES USERS (USER_ID) on update cascade on delete cascade
 );
+create table if not exists FEED
+(
+    TIMESTAMP  TIMESTAMP              not null,
+    USER_ID    INTEGER                not null,
+    EVENT_TYPE CHARACTER VARYING(10)  not null,
+    OPERATION  CHARACTER VARYING(10)  not null,
+    EVENT_ID   INTEGER auto_increment not null,
+    ENTITY_ID  INTEGER                not null,
+    FOREIGN KEY (USER_ID) REFERENCES USERS (USER_ID) on delete cascade
+);

@@ -23,8 +23,8 @@ public class FilmDirectorDbStorage implements FilmDirectorStorage {
     }
 
     @Override
-    public void updateDirectorsOfFilm (Film film) {
-        jdbcTemplate.update("delete from FILMS_DIRECTORS where FILM_ID=?",film.getId());
+    public void updateDirectorsOfFilm(Film film) {
+        jdbcTemplate.update("delete from FILMS_DIRECTORS where FILM_ID=?", film.getId());
         if (film.getDirectors() != null && film.getDirectors().size() > 0) {
             jdbcTemplate.batchUpdate("merge into FILMS_DIRECTORS(FILM_ID, DIRECTOR_ID) " +
                             "key(FILM_ID, DIRECTOR_ID) values (?, ?)",

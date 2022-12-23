@@ -19,7 +19,7 @@ import java.util.Optional;
 public class DirectorDbStorage implements DirectorStorage {
     private final JdbcTemplate jdbcTemplate;
 
-    public DirectorDbStorage(JdbcTemplate jdbcTemplate){
+    public DirectorDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 

@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 public interface FilmDirectorStorage {
-    void updateDirectorsOfFilm (Film film);
+    void updateDirectorsOfFilm(Film film);
 
     Map<Integer, Set<Director>> getDirectorsOfFilms(List<Integer> filmIds);
 }
