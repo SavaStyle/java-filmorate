@@ -5,7 +5,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
+import ru.yandex.practicum.filmorate.model.Feed;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.FeedStorage;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.time.LocalDate;
@@ -13,12 +17,16 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import static ru.yandex.practicum.filmorate.storage.impl.FeedDbStorage.*;
+
 @Component
 @RequiredArgsConstructor
 @Data
 public class UserService {
 
     private final UserStorage userStorage;
+    private final FeedStorage feedStorage;
+    private final FilmStorage filmStorage;
 
     public User addNewUser(User user) {
         try {
@@ -52,12 +60,14 @@ public class UserService {
             throw new NotFoundException("Пользователь не найден");
         }
         userStorage.addFriend(userID, friendId);
+        feedStorage.addFeed(userID, FRIEND, ADD, friendId);
     }
 
     public void deleteFriend(int userID, int friendId) {
         getUserById(userID);
         getUserById(friendId);
         userStorage.removeFriend(userID, friendId);
+        feedStorage.addFeed(userID, FRIEND, REMOVE, friendId);
     }
 
     public List<User> getFriendsList(int userID) {
@@ -90,5 +100,19 @@ public class UserService {
             throw new ValidationException("дата рождения не может быть в будущем");
         }
         return b;
+    }
+
+    public void deleteUserById(int id) {
+        userStorage.removeUserById(id);
+    }
+
+    public List<Film> getRecommendations(int userID) {
+        return filmStorage.getRecommendations(userID);
+    }
+
+    public List<Feed> getFeed(int userId) {
+        Optional<User> optionalUser = getUserById(userId);
+        User user = optionalUser.orElseThrow(() -> new NotFoundException("Пользователь не найден"));
+        return feedStorage.getFeed(userId);
     }
 }

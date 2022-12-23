@@ -28,7 +28,7 @@ public class FilmController {
 
     @GetMapping("/films")
     public Collection<Film> returnFilms() {
-        return filmService.getFilmStorage().getAllFilms();
+        return filmService.getAllFilms();
     }
 
     @GetMapping("/films/{id}")
@@ -47,7 +47,30 @@ public class FilmController {
     }
 
     @GetMapping("/films/popular")
-    public Collection<Film> getTop(@RequestParam(value = "count", defaultValue = "10", required = false) Integer count) {
-        return filmService.getTop(count);
+    public Collection<Film> getTop(@RequestParam(value = "count", defaultValue = "10", required = false) Integer count,
+                                   @RequestParam(value = "genreId", required = false) Integer genreId,
+                                   @RequestParam(value = "year", required = false) Integer year) {
+        return filmService.getTop(count, genreId, year);
+    }
+
+    @DeleteMapping("/films/{id}")
+    public void deleteFilmById(@PathVariable String id) {
+        filmService.deleteFilmById(Integer.valueOf(id));
+    }
+
+    @GetMapping("/films/director/{directorId}")
+    public Collection<Film> getFilmsOfDirector(@PathVariable int directorId, @RequestParam String sortBy) {
+        return filmService.getFilmsOfDirector(directorId, sortBy);
+    }
+
+    @GetMapping("/films/common")
+    public Collection<Film> getCommonFilms(@RequestParam int userId, @RequestParam int friendId) {
+        return filmService.getCommonFilms(userId, friendId);
+    }
+
+    @GetMapping("/films/search")
+    public Collection<Film> search(@RequestParam(value = "query", required = false) String query,
+                                   @RequestParam(value = "by", required = false) String[] fields) {
+        return filmService.search(query, fields);
     }
 }

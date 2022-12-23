@@ -15,7 +15,7 @@ import java.util.Optional;
 public class LikesDbStorage implements LikesStorage {
 
     private final JdbcTemplate jdbcTemplate;
-    private final  FilmStorage filmStorage;
+    private final FilmStorage filmStorage;
 
     @Override
     public Optional<Film> addLike(int filmId, int userId) throws NotFoundException {

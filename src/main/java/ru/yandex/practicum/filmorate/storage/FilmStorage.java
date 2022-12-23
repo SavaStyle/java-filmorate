@@ -17,8 +17,17 @@ public interface FilmStorage {
 
     Collection<Film> getAllFilms();
 
-    List<Film> getPopularFilms(int count);
+    List<Film> getPopularFilms(int count, Integer genreId, Integer year);
 
     boolean isPresent(int id);
-}
 
+    void removeFilmById(int id);
+
+    List<Film> getRecommendations(int userID);
+
+    Collection<Film> getFilmsOfDirector(int directorId, String sortBy);
+
+    Collection<Film> getCommonFilms(int userId, int friendId);
+
+    List<Film> search(String query, String[] by);
+} 
