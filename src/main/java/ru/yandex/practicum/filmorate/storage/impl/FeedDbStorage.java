@@ -31,7 +31,7 @@ public class FeedDbStorage implements FeedStorage {
         jdbcInsert.withTableName("FEED").usingGeneratedKeyColumns("EVENT_ID");
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         Map<String, Object> parameters = new HashMap<>();
-        parameters.put("TIMESTAMP", timestamp);
+        parameters.put("FEED_TIMESTAMP", timestamp);
         parameters.put("USER_ID", userId);
         parameters.put("EVENT_TYPE", eventType);
         parameters.put("OPERATION", operation);
@@ -46,7 +46,7 @@ public class FeedDbStorage implements FeedStorage {
     }
 
     private Feed makeFeed(ResultSet resultSet, int rowNum) throws SQLException {
-        Timestamp timestamp = resultSet.getTimestamp("TIMESTAMP");
+        Timestamp timestamp = resultSet.getTimestamp("FEED_TIMESTAMP");
         Integer userId = resultSet.getInt("USER_ID");
         String eventType = resultSet.getString("EVENT_TYPE");
         String operation = resultSet.getString("OPERATION");

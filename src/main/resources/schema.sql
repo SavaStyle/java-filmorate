@@ -107,7 +107,7 @@ create table if not exists REVIEW_LIKES
 );
 create table if not exists FEED
 (
-    TIMESTAMP  TIMESTAMP              not null,
+    FEED_TIMESTAMP  TIMESTAMP         not null,
     USER_ID    INTEGER                not null,
     EVENT_TYPE CHARACTER VARYING(10)  not null,
     OPERATION  CHARACTER VARYING(10)  not null,

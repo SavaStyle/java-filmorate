@@ -271,8 +271,6 @@ public class FilmDbStorage implements FilmStorage {
                             "       GROUP BY FILM_ID) AS FILMS_RATING" +
                             "   ON FILMS.FILM_ID=FILMS_RATING.FILM_ID" +
                             "   LEFT JOIN MPA ON MPA.MPA_ID = FILMS.MPA_ID" +
-                            "   LEFT JOIN FILMS_DIRECTORS ON FILMS.FILM_ID = FILMS_DIRECTORS.FILM_ID" +
-                            "   LEFT JOIN DIRECTORS ON FILMS_DIRECTORS.DIRECTOR_ID = DIRECTORS.DIRECTOR_ID" +
                             "   WHERE FILMS.FILM_NAME ILIKE ?" +
                             "   ORDER BY FILMS_RATING.RATING DESC NULLS LAST";
             return jdbcTemplate.query(sqlQuery, this::makeFilm, query);
