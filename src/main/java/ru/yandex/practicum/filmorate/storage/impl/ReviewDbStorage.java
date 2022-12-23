@@ -78,7 +78,6 @@ public class ReviewDbStorage implements ReviewStorage {
     @Override
     public Collection<Review> findReviewsByFilmId(int filmId, int count) {
         String sqlQuery = "SELECT * FROM REVIEWS WHERE FILM_ID = ? " +
-                "GROUP BY REVIEW_ID " +
                 "ORDER BY USEFUL DESC " +
                 "LIMIT ?";
         return jdbcTemplate.query(sqlQuery, ReviewDbStorage::makeReview, filmId, count);
@@ -87,7 +86,6 @@ public class ReviewDbStorage implements ReviewStorage {
     @Override
     public Collection<Review> findAllReviews(int count) {
         String sqlQuery = "SELECT * FROM REVIEWS " +
-                "GROUP BY REVIEW_ID " +
                 "ORDER BY USEFUL DESC " +
                 "LIMIT ?";
         return jdbcTemplate.query(sqlQuery, ReviewDbStorage::makeReview, count);

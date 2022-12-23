@@ -58,24 +58,28 @@ public class ReviewService {
     public void addLikeToReview(int id, int userId) {
         userStorage.isPresent(userId);
         reviewStorage.isPresent(id);
+        reviewLikeStorage.isPresentLikeOrDislike(id, userId);
         reviewLikeStorage.addLikeToReview(id, userId);
     }
 
     public void addDislikeToReview(int id, int userId) {
         userStorage.isPresent(userId);
         reviewStorage.isPresent(id);
+        reviewLikeStorage.isPresentLikeOrDislike(id, userId);
         reviewLikeStorage.addDislikeToReview(id, userId);
     }
 
     public void deleteDislikeFromReview(int id, int userId) {
         userStorage.isPresent(userId);
         reviewStorage.isPresent(id);
+        reviewLikeStorage.isPresentDislike(id, userId);
         reviewLikeStorage.deleteDislikeFromReview(id, userId);
     }
 
     public void deleteLikeFromReview(int id, int userId) {
         userStorage.isPresent(userId);
         reviewStorage.isPresent(id);
+        reviewLikeStorage.isPresentLike(id, userId);
         reviewLikeStorage.deleteLikeFromReview(id, userId);
     }
 
