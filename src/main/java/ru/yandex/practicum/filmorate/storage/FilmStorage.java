@@ -17,7 +17,7 @@ public interface FilmStorage {
 
     Collection<Film> getAllFilms();
 
-    List<Film> getPopularFilms(int count);
+    List<Film> getPopularFilms(int count, Integer genreId, Integer year);
 
     boolean isPresent(int id);
 

@@ -71,8 +71,8 @@ public class FilmService {
         return Optional.of(film);
     }
 
-    public List<Film> getTop(int count) {
-        List<Film> films = filmStorage.getPopularFilms(count);
+    public List<Film> getTop(int count, Integer genreId, Integer year) {
+        List<Film> films = filmStorage.getPopularFilms(count, genreId, year);
         setFilmDirectors(films);
         return films;
     }

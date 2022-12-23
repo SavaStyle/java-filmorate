@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.storage.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.objectweb.asm.Type;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -80,17 +81,43 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> getPopularFilms(int count) {
-        String sqlQuery = "SELECT FILMS.FILM_ID, FILMS.FILM_NAME, DESCRIPTION, RELEASE_DATE, DURATION, m.MPA_ID, m.MPA_NAME " +
-                "FROM FILMS " +
-                "LEFT JOIN LIKES ON FILMS.FILM_ID = LIKES.FILM_ID " +
-                "LEFT JOIN mpa m on m.MPA_ID = films.MPA_ID " +
-                "GROUP BY FILMS.FILM_ID, LIKES.FILM_ID IN ( " +
-                "SELECT FILM_ID " +
-                "FROM LIKES) " +
-                "ORDER BY COUNT(LIKES.FILM_ID) DESC " +
-                "LIMIT ?";
-        List<Film> films = jdbcTemplate.query(sqlQuery, this::makeFilm, count);
+    public List<Film> getPopularFilms(int count, Integer genreId, Integer year) {
+        List<Object> args = new LinkedList<>();
+        List<Integer> argTypes = new ArrayList<>();
+        if (genreId != null) {
+            args.add(genreId);
+            argTypes.add(Type.INT);
+        }
+        if (year != null) {
+            args.add(year);
+            argTypes.add(Type.INT);
+        }
+        args.add(count);
+        argTypes.add(Type.INT);
+
+        String sqlQuery =
+                "   SELECT FILMS.*, MPA.MPA_NAME" +
+                "   FROM FILMS" +
+                "   LEFT OUTER JOIN (SELECT FILM_ID, COUNT(USER_ID) AS RATING" +
+                "       FROM LIKES" +
+                "       GROUP BY FILM_ID) AS FILMS_RATING" +
+                "   ON FILMS.FILM_ID=FILMS_RATING.FILM_ID" +
+                "   LEFT JOIN MPA" +
+                "   ON MPA.MPA_ID = FILMS.MPA_ID" +
+                (genreId != null ?
+                "   LEFT JOIN FILM_GENRE" +
+                "   ON FILM_GENRE.FILM_ID = FILMS.FILM_ID" +
+                "   WHERE FILM_GENRE.GENRE_ID = ?": "") +
+                (year != null ? (genreId == null ? " WHERE" : " AND") +
+                "       EXTRACT(YEAR FROM FILMS.RELEASE_DATE) = ?" : ""
+                ) +
+                "   ORDER BY FILMS_RATING.RATING DESC NULLS LAST LIMIT ?";
+
+        List<Film> films = jdbcTemplate.query(sqlQuery,
+                args.toArray(),
+                argTypes.stream().mapToInt(Integer::intValue).toArray(),
+                this::makeFilm);
+
         return films;
     }
 
