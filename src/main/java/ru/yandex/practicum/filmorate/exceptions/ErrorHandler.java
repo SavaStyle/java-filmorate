@@ -37,5 +37,4 @@ public class ErrorHandler {
     public Map<String, String> internalException(final Exception e) {
         return Map.of("Внутренняя ошибка", e.getMessage());
     }
-
 }
