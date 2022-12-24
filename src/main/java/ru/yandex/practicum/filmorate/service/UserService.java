@@ -10,6 +10,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FeedStorage;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.FriendshipSrorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.time.LocalDate;
@@ -27,6 +28,8 @@ public class UserService {
     private final UserStorage userStorage;
     private final FeedStorage feedStorage;
     private final FilmStorage filmStorage;
+    private final FriendshipSrorage friendshipSrorage;
+
 
     public User addNewUser(User user) {
         try {
@@ -59,14 +62,14 @@ public class UserService {
         if (!(userStorage.isPresent(userID)) || !(userStorage.isPresent(friendId))) {
             throw new NotFoundException("Пользователь не найден");
         }
-        userStorage.addFriend(userID, friendId);
+        friendshipSrorage.addFriend(userID, friendId);
         feedStorage.addFeed(userID, FRIEND, ADD, friendId);
     }
 
     public void deleteFriend(int userID, int friendId) {
         getUserById(userID);
         getUserById(friendId);
-        userStorage.removeFriend(userID, friendId);
+        friendshipSrorage.removeFriend(userID, friendId);
         feedStorage.addFeed(userID, FRIEND, REMOVE, friendId);
     }
 

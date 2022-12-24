@@ -51,32 +51,23 @@ public class ReviewLikeDbStorage implements ReviewLikeStorage {
     public void addLikeToReview(int id, int userId) {
         String sqlQuery1 = "INSERT INTO REVIEW_LIKES (REVIEW_ID, USER_ID, IS_LIKE) VALUES (?, ?, ?)";
         jdbcTemplate.update(sqlQuery1, id, userId, true);
-        String sqlQuery = "UPDATE REVIEWS SET USEFUL = USEFUL + 1 WHERE REVIEW_ID = ?";
-        jdbcTemplate.update(sqlQuery, id);
     }
 
     @Override
     public void addDislikeToReview(int id, int userId) {
         String sqlQuery1 = "INSERT INTO REVIEW_LIKES (REVIEW_ID, USER_ID, IS_LIKE) VALUES (?, ?, ?)";
         jdbcTemplate.update(sqlQuery1, id, userId, false);
-        String sqlQuery = "UPDATE REVIEWS SET USEFUL = USEFUL - 1 WHERE REVIEW_ID = ?";
-        jdbcTemplate.update(sqlQuery, id);
     }
 
     @Override
     public void deleteDislikeFromReview(int id, int userId) {
         String sqlQuery1 = "DELETE FROM REVIEW_LIKES WHERE REVIEW_ID = ? AND USER_ID= ?";
         jdbcTemplate.update(sqlQuery1, id, userId);
-        String sqlQuery = "UPDATE REVIEWS SET USEFUL = USEFUL + 1 WHERE REVIEW_ID = ?";
-        jdbcTemplate.update(sqlQuery, id);
     }
 
     @Override
     public void deleteLikeFromReview(int id, int userId) {
         String sqlQuery1 = "DELETE FROM REVIEW_LIKES WHERE REVIEW_ID = ? AND USER_ID= ?";
         jdbcTemplate.update(sqlQuery1, id, userId);
-        String sqlQuery = "UPDATE REVIEWS SET USEFUL = USEFUL - 1 WHERE REVIEW_ID = ?";
-        jdbcTemplate.update(sqlQuery, id);
-
     }
 }

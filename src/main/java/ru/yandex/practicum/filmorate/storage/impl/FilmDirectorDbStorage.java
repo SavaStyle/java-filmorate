@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.storage.impl;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -15,12 +16,9 @@ import java.sql.SQLException;
 import java.util.*;
 
 @Component
+@RequiredArgsConstructor
 public class FilmDirectorDbStorage implements FilmDirectorStorage {
-    JdbcTemplate jdbcTemplate;
-
-    FilmDirectorDbStorage(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
+    private final JdbcTemplate jdbcTemplate;
 
     @Override
     public void updateDirectorsOfFilm(Film film) {

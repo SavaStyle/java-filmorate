@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.util.sortByEnum;
 
 import javax.validation.Valid;
 import java.util.Collection;
@@ -59,7 +60,7 @@ public class FilmController {
     }
 
     @GetMapping("/films/director/{directorId}")
-    public Collection<Film> getFilmsOfDirector(@PathVariable int directorId, @RequestParam String sortBy) {
+    public Collection<Film> getFilmsOfDirector(@PathVariable int directorId, @RequestParam sortByEnum sortBy) {
         return filmService.getFilmsOfDirector(directorId, sortBy);
     }
 

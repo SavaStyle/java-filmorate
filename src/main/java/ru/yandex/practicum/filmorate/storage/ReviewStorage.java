@@ -20,4 +20,12 @@ public interface ReviewStorage {
     Collection<Review> findReviewsByFilmId(int filmId, int count);
 
     Collection<Review> findAllReviews(int count);
+
+    void addLikeToReview(int id, int userId);
+
+    void addDislikeToReview(int id, int userId);
+
+    void deleteDislikeFromReview(int id, int userId);
+
+    void deleteLikeFromReview(int id, int userId);
 }

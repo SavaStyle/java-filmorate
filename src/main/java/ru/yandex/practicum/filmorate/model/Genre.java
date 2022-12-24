@@ -5,12 +5,14 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.Min;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @Data
 public class Genre {
-
+    @Min(1)
     private int id;
 
     private String name;

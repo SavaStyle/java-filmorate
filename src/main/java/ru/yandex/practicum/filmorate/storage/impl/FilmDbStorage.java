@@ -15,6 +15,7 @@ import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.FilmGenreStorage;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.GenreStorage;
+import ru.yandex.practicum.filmorate.util.sortByEnum;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -30,7 +31,6 @@ public class FilmDbStorage implements FilmStorage {
     private final JdbcTemplate jdbcTemplate;
     private final FilmGenreStorage filmGenreStorage;
     private final GenreStorage genreStorage;
-
 
     @Override
     public Film addNewFilm(Film film) {
@@ -150,10 +150,10 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public Collection<Film> getFilmsOfDirector(int directorId, String sortBy) {
+    public Collection<Film> getFilmsOfDirector(int directorId, sortByEnum sortBy) {
         String sql;
-        switch (sortBy.toLowerCase()) {
-            case "likes":
+        switch (sortBy) {
+            case likes:
                 sql = "select F.FILM_ID, F.FILM_NAME, F.DESCRIPTION, F.DURATION, F.RELEASE_DATE, F.MPA_ID, M.MPA_NAME, count(L.USER_ID) as RAITING " +
                         "from FILMS as F " +
                         "join MPA as M on F.MPA_ID = M.MPA_ID " +
@@ -163,7 +163,7 @@ public class FilmDbStorage implements FilmStorage {
                         "group by F.FILM_ID, F.FILM_NAME, F.DESCRIPTION, F.DURATION, F.RELEASE_DATE, F.MPA_ID, M.MPA_NAME " +
                         "order by RAITING desc;";
                 break;
-            case "year":
+            case year:
                 sql = "select F.FILM_ID, F.FILM_NAME, F.DESCRIPTION, F.DURATION, F.RELEASE_DATE, F.MPA_ID, M.MPA_NAME, count(L.USER_ID) as RAITING " +
                         "from FILMS as F " +
                         "join MPA as M on F.MPA_ID = M.MPA_ID " +

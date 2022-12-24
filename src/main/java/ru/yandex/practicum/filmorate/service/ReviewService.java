@@ -5,13 +5,12 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Review;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.ReviewLikeStorage;
-import ru.yandex.practicum.filmorate.storage.ReviewStorage;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
+import ru.yandex.practicum.filmorate.storage.*;
 
 import java.util.Collection;
 import java.util.Optional;
+
+import static ru.yandex.practicum.filmorate.storage.impl.FeedDbStorage.*;
 
 
 @Service
@@ -21,16 +20,21 @@ public class ReviewService {
     private final ReviewLikeStorage reviewLikeStorage;
     private final FilmStorage filmStorage;
     private final UserStorage userStorage;
+    private final FeedStorage feedStorage;
 
     public Optional<Review> addReview(Review review) {
         reviewValidation(review);
         filmStorage.isPresent(review.getFilmId());
         userStorage.isPresent(review.getUserId());
-        return reviewStorage.addReview(review);
+        Optional<Review> review1 = reviewStorage.addReview(review);
+        feedStorage.addFeed(review.getUserId(), REVIEW, ADD, review1.get().getReviewId());
+        return review1;
     }
 
     public Optional<Review> updateReview(Review review) {
         reviewStorage.isPresent(review.getReviewId());
+        Review rw = findReviewById(review.getReviewId()).get();
+        feedStorage.addFeed(rw.getUserId(), REVIEW, UPDATE, rw.getReviewId());
         return reviewStorage.updateReview(review);
     }
 
@@ -44,6 +48,7 @@ public class ReviewService {
         reviewStorage.findReviewById(id).orElseThrow(() -> {
             throw new NotFoundException("Отзыв не найден");
         });
+        feedStorage.addFeed(findReviewById(id).get().getUserId(), REVIEW, REMOVE, id);
         reviewStorage.deleteReviewById(id);
     }
 
@@ -61,6 +66,7 @@ public class ReviewService {
         reviewStorage.isPresent(id);
         reviewLikeStorage.isPresentLikeOrDislike(id, userId);
         reviewLikeStorage.addLikeToReview(id, userId);
+        reviewStorage.addLikeToReview(id, userId);
     }
 
     public void addDislikeToReview(int id, int userId) {
@@ -68,6 +74,7 @@ public class ReviewService {
         reviewStorage.isPresent(id);
         reviewLikeStorage.isPresentLikeOrDislike(id, userId);
         reviewLikeStorage.addDislikeToReview(id, userId);
+        reviewStorage.addDislikeToReview(id, userId);
     }
 
     public void deleteDislikeFromReview(int id, int userId) {
@@ -75,6 +82,7 @@ public class ReviewService {
         reviewStorage.isPresent(id);
         reviewLikeStorage.isPresentDislike(id, userId);
         reviewLikeStorage.deleteDislikeFromReview(id, userId);
+        reviewStorage.deleteDislikeFromReview(id, userId);
     }
 
     public void deleteLikeFromReview(int id, int userId) {
@@ -82,6 +90,7 @@ public class ReviewService {
         reviewStorage.isPresent(id);
         reviewLikeStorage.isPresentLike(id, userId);
         reviewLikeStorage.deleteLikeFromReview(id, userId);
+        reviewStorage.deleteLikeFromReview(id, userId);
     }
 
     public boolean reviewValidation(Review review) throws ValidationException {

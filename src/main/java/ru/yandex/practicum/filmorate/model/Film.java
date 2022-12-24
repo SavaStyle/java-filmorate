@@ -16,7 +16,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Film {
-
+    @Min(1)
     private int id;
     @NotBlank
     private String name;

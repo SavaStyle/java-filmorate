@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.storage;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.util.sortByEnum;
 
 import java.util.Collection;
 import java.util.List;
@@ -23,9 +24,9 @@ public interface FilmStorage {
 
     void removeFilmById(int id);
 
-    List<Film> getRecommendations(int userID);
+    Collection<Film> getFilmsOfDirector(int directorId, sortByEnum sortBy);
 
-    Collection<Film> getFilmsOfDirector(int directorId, String sortBy);
+    List<Film> getRecommendations(int userID);
 
     Collection<Film> getCommonFilms(int userId, int friendId);
 

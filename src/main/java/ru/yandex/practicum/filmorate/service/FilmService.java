@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.*;
+import ru.yandex.practicum.filmorate.util.sortByEnum;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -100,7 +101,7 @@ public class FilmService {
         filmStorage.removeFilmById(id);
     }
 
-    public Collection<Film> getFilmsOfDirector(int directorId, String sortBy) {
+    public Collection<Film> getFilmsOfDirector(int directorId, sortByEnum sortBy) {
         directorStorage.getById(directorId).orElseThrow(() -> {
             throw new NotFoundException("Режиссёр не найден");
         });
