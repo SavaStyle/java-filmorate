@@ -3,6 +3,8 @@ package ru.yandex.practicum.filmorate.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.model.Feed;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 
@@ -56,6 +58,21 @@ public class UserController {
     @GetMapping("/users/{id}/friends/common/{otherId}")
     public List<User> getCommonFriends(@PathVariable String id, @PathVariable String otherId) {
         return userService.getCommonFriends(Integer.parseInt(id), Integer.parseInt(otherId));
+    }
+
+    @DeleteMapping("/users/{id}")
+    public void deleteUserById(@PathVariable String id) {
+        userService.deleteUserById(Integer.parseInt(id));
+    }
+
+    @GetMapping("/users/{id}/recommendations")
+    public List<Film> getRecommendations(@PathVariable Integer id) {
+        return userService.getRecommendations(id);
+    }
+
+    @GetMapping("/users/{id}/feed")
+    public List<Feed> getFeed(@PathVariable String id) {
+        return userService.getFeed(Integer.parseInt(id));
     }
 }
 

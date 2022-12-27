@@ -5,17 +5,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
+import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.LikesStorage;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
+import ru.yandex.practicum.filmorate.storage.*;
+import ru.yandex.practicum.filmorate.util.sortByEnum;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static ru.yandex.practicum.filmorate.storage.impl.FeedDbStorage.*;
 
 @Component
 @RequiredArgsConstructor
@@ -25,11 +25,16 @@ public class FilmService {
     private final FilmStorage filmStorage;
     private final UserStorage userStorage;
     private final LikesStorage likesStorage;
+    private final FeedStorage feedStorage;
+    private final DirectorStorage directorStorage;
+    private final FilmDirectorStorage filmDirectorStorage;
 
 
     public Film addNewFilm(Film film) {
         filmValidation(film);
         filmStorage.addNewFilm(film);
+        filmDirectorStorage.updateDirectorsOfFilm(film);
+        setFilmDirectors(List.of(film));
         return film;
     }
 
@@ -42,6 +47,8 @@ public class FilmService {
                     film.getGenres().stream().distinct().collect(Collectors.toList());
         }
         film.setGenres(listWithoutDuplicates);
+        filmDirectorStorage.updateDirectorsOfFilm(film);
+        setFilmDirectors(List.of(film));
         return filmStorage.updateFilm(film);
     }
 
@@ -49,23 +56,29 @@ public class FilmService {
         getFilmById(filmId);
         userStorage.getUserById(userId);
         likesStorage.addLike(filmId, userId);
+        feedStorage.addFeed(userId, LIKE, ADD, filmId);
     }
 
     public void removeLike(int filmId, int userId) throws NotFoundException {
         filmStorage.isPresent(filmId);
         userStorage.isPresent(userId);
         likesStorage.removeLike(filmId, userId);
+        feedStorage.addFeed(userId, LIKE, REMOVE, filmId);
     }
 
     public Optional<Film> getFilmById(Integer id) {
         if (!(filmStorage.isPresent(id))) {
             throw new NotFoundException("Пользователь не найден");
         }
-        return filmStorage.getFilmById(id);
+        Film film = filmStorage.getFilmById(id).get();
+        setFilmDirectors(List.of(film));
+        return Optional.of(film);
     }
 
-    public List<Film> getTop(int count) {
-        return filmStorage.getPopularFilms(count);
+    public List<Film> getTop(int count, Integer genreId, Integer year) {
+        List<Film> films = filmStorage.getPopularFilms(count, genreId, year);
+        setFilmDirectors(films);
+        return films;
     }
 
     public boolean filmValidation(Film film) throws ValidationException {
@@ -82,5 +95,45 @@ public class FilmService {
             throw new ValidationException("продолжительность фильма должна быть положительной");
         }
         return true;
+    }
+
+    public void deleteFilmById(Integer id) {
+        filmStorage.removeFilmById(id);
+    }
+
+    public Collection<Film> getFilmsOfDirector(int directorId, sortByEnum sortBy) {
+        directorStorage.getById(directorId).orElseThrow(() -> {
+            throw new NotFoundException("Режиссёр не найден");
+        });
+        Collection<Film> films = filmStorage.getFilmsOfDirector(directorId, sortBy);
+        setFilmDirectors(films);
+        return films;
+    }
+
+    private void setFilmDirectors(Collection<Film> films) {
+        List<Integer> filmIds = films.stream().map(Film::getId).collect(Collectors.toList());
+        Map<Integer, Set<Director>> directors = filmDirectorStorage.getDirectorsOfFilms(filmIds);
+        for (Film film : films) {
+            film.setDirectors(directors.getOrDefault(film.getId(), new HashSet<>()));
+        }
+    }
+
+    public Collection<Film> getAllFilms() {
+        Collection<Film> films = filmStorage.getAllFilms();
+        setFilmDirectors(films);
+        return films;
+    }
+
+    public Collection<Film> getCommonFilms(int userId, int friendId) {
+        Collection<Film> films = filmStorage.getCommonFilms(userId, friendId);
+        setFilmDirectors(films);
+        return films;
+    }
+
+
+    public List<Film> search(String query, String[] by) {
+        List<Film> films = filmStorage.search(query, by);
+        setFilmDirectors(films);
+        return films;
     }
 }
